@@ -30,8 +30,7 @@ res.send("Swasthya Server is up and running.....");
 });
 
 
-app.use("/updateTime", require("./src/Utils/serverversion.js")); 
-
+app.use("/updateTime", require("./src/Utils/serverversion.js")); //update server version
 app.use("/user", require("./src/routes/user_routes.js"));
 app.use("/workout", require("./src/routes/workout_planner_routes.js"));
 app.use("/goals", require("./src/routes/goal_setting_routes.js"));
@@ -41,9 +40,9 @@ app.use("/Sleep", require("./src/routes/sleep_patterns_routes.js"));
 app.use("/meal", require("./src/routes/generate_meal_plan_routes.js"));
 app.use("/medication", require("./src/routes/medication_routes.js"));
 app.use("/leaderboard", require("./src/routes/leaderboard_routes.js"));
-app.use("/request", require('./src/routes/request_routes.js'));
-app.use("/relatives", require('./src/routes/relatives_routes.js'));
-app.use("/water", require('./src/routes/water_routes.js'));
+app.use("/request", require("./src/routes/request_routes.js"));
+app.use("/relatives", require("./src/routes/relatives_routes.js"));
+app.use("/water", require("./src/routes/water_routes.js"));
 
 let { connectDB } = require("./db/dbconnection.js");
 

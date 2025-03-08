@@ -12,16 +12,20 @@ const exerciseSchema = new Schema({
         type: String,
         required: true
     },
-    taget:{
+    target:{
         type: String,
-        required: truersr
+        required: true
     },
     name: {
         type: String,
         required: true
     },
+    date:{
+        type: String,
+        required: true
+    },
     time: {
-        type: Number,
+        type: String,
         required: true
     },
     caloriesBurn: {
@@ -30,11 +34,13 @@ const exerciseSchema = new Schema({
     },
     doneAt: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now
     },
     status: {
         type: Boolean,
-        required: true
+        required: true,
+        default: false
     },
     weekDays: {
         type: [String],
