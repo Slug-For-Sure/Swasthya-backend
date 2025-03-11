@@ -1,5 +1,6 @@
 const TeleSignSDK = require("telesignsdk");
 const { storeOtp, viewStoredOtps } = require("./mapstore");
+const { default: axios, head } = require("axios");
 
 const customerId = process.env.CUSTOMER_ID;
 const apiKey = process.env.API_KEY;
@@ -25,56 +26,90 @@ const client = new TeleSignSDK(customerId, apiKey);
 //  * @param {string} mobile - The mobile number to send the OTP to.
 //  * @returns {Promise<{success: boolean, message: string, otp?: number}>} - A response object indicating success or failure.
 //  */
-async function sendOtp(mobile) {
-    try {
-        // Validate the mobile number
-        // if (!isValidMobileNumber(mobile)) {
-        //     console.error(`Invalid mobile number: ${mobile}`);
-        //     return {
-        //         success: false,
-        //         message: "Invalid mobile number",
-        //     };
-        // }
+// async function sendOtp(mobile) {
+//     try {
+//         // Validate the mobile number
+//         // if (!isValidMobileNumber(mobile)) {
+//         //     console.error(`Invalid mobile number: ${mobile}`);
+//         //     return {
+//         //         success: false,
+//         //         message: "Invalid mobile number",
+//         //     };
+//         // }
 
-        // Generate a 6-digit OTP
+//         // Generate a 6-digit OTP
+//         const otp = Math.floor(100000 + Math.random() * 900000);
+//         const message = `Your OTP-Verification OTP is ${otp}`;
+//         const messageType = "ARN";
+
+//         // Send the SMS using the TeleSign SDK
+//         const response = await new Promise((resolve, reject) => {
+//             client.sms.message(
+//                 (error, responseBody) => {
+//                     if (error) {
+//                         reject(error);
+//                     } else {
+//                         resolve(responseBody);
+//                     }
+//                 },
+//                 mobile,
+//                 message,
+//                 messageType
+//             );
+//         }); 
+//         // Check if the SMS was sent successfully
+//         if (response.status.code !== 290) {
+//             return {
+//                 success: false,
+//                 message: `Failed to send SMS: ${response.status.description}`,
+//             };
+//         }        
+//             await storeOtp(mobile, otp);
+//         // Return success response
+//         return {
+//             success: true,
+//             message: "OTP sent successfully",
+//         };
+//     } catch (error) {
+//         return {
+//             success: false,
+//             message: "Unable to send SMS due to an internal error",
+//         };
+//     }
+// }
+ const sendOtp = async (mobile) => {
+    try {
         const otp = Math.floor(100000 + Math.random() * 900000);
         const message = `Your OTP-Verification OTP is ${otp}`;
-        const messageType = "ARN";
-
-        // Send the SMS using the TeleSign SDK
-        const response = await new Promise((resolve, reject) => {
-            client.sms.message(
-                (error, responseBody) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(responseBody);
-                    }
-                },
-                mobile,
-                message,
-                messageType
-            );
-        }); 
-        // Check if the SMS was sent successfully
-        if (response.status.code !== 290) {
+        const response = await axios.post(process.env.RAJDOOT_API_URL,{
+            recipient: mobile,
+            content: message,
+        },{
+            headers:{
+                'x-api-id': process.env.RAJDOOT_API_ID,
+                'x-api-key': process.env.RAJDOOT_API_KEY,
+            }
+        });
+        
+        if (response.data.success !== true) {
             return {
                 success: false,
-                message: `Failed to send SMS: ${response.status.description}`,
+                message: 'Failed to send SMS',
             };
-        }        
+        }
             await storeOtp(mobile, otp);
-        // Return success response
         return {
             success: true,
             message: "OTP sent successfully",
         };
     } catch (error) {
+        console.log(error);
+        
         return {
             success: false,
             message: "Unable to send SMS due to an internal error",
         };
     }
-}
+ };
 
 module.exports = sendOtp;

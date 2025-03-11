@@ -166,6 +166,8 @@ exports.user_logout = async (req, res) => {
 };
 exports.sendOtp = async (req, res) => {
   const mobile = req.body.mobile;
+    console.log(mobile);
+    
   try {
     const existingUser = await user_model.findOne({ mobile });
     if (existingUser) {
@@ -178,6 +180,7 @@ exports.sendOtp = async (req, res) => {
     
     
     const result = await sendOtp(mobile);
+    
 
     if (!result.success) {
       return {
@@ -211,8 +214,8 @@ exports.sendOtp = async (req, res) => {
 };
 
 exports.verifyOtp = async (req, res) => {
-  const { mobile, otp } = req.body;
-  const verifyOtp = await getOtp(mobile);
+  const { mobile, otp } = req.body;  
+  const verifyOtp = await getOtp(mobile);  
   if (!verifyOtp) {
     return {
       status: 400,
@@ -220,6 +223,7 @@ exports.verifyOtp = async (req, res) => {
       message: "OTP expired",
     };
   }
+
 
   try {
     if (!mobile || !otp) {
